@@ -33,7 +33,7 @@ export function LoginForm() {
     })
 
     if (result?.error) {
-      toast.error('E-mail ou senha inválidos.')
+      toast.error('Nao foi possivel entrar agora. Se continuar, confira a configuracao do servidor.')
       return
     }
 
@@ -44,7 +44,6 @@ export function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-      {/* E-mail */}
       <div className="space-y-1.5">
         <Label htmlFor="email" className="text-[var(--color-soft-white-dim)] text-sm">
           E-mail
@@ -62,7 +61,6 @@ export function LoginForm() {
         )}
       </div>
 
-      {/* Senha */}
       <div className="space-y-1.5">
         <div className="flex items-center justify-between">
           <Label htmlFor="password" className="text-[var(--color-soft-white-dim)] text-sm">
@@ -79,7 +77,7 @@ export function LoginForm() {
           <Input
             id="password"
             type={showPassword ? 'text' : 'password'}
-            placeholder="••••••••"
+            placeholder="********"
             autoComplete="current-password"
             className="bg-[rgba(255,255,255,0.04)] border-[rgba(201,168,76,0.2)] text-[var(--color-soft-white)] placeholder:text-[var(--color-soft-white-dim)]/40 focus-visible:border-[var(--color-gold)] focus-visible:ring-[var(--color-gold)]/20 pr-10"
             {...register('password')}
@@ -111,7 +109,7 @@ export function LoginForm() {
       </Button>
 
       <p className="text-center text-sm text-[var(--color-soft-white-dim)]/60">
-        Não tem uma conta?{' '}
+        Nao tem uma conta?{' '}
         <Link href="/cadastro" className="text-[var(--color-gold)] hover:text-[var(--color-gold-light)] transition-colors">
           Criar conta
         </Link>

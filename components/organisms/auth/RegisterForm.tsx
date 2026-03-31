@@ -40,12 +40,14 @@ export function RegisterForm() {
   const password = watch('password', '')
 
   const onSubmit = async (data: RegisterInput) => {
+    const normalizedEmail = data.email.trim().toLowerCase()
+
     const res = await fetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         full_name: data.full_name,
-        email: data.email,
+        email: normalizedEmail,
         password: data.password,
       }),
     })
@@ -56,27 +58,25 @@ export function RegisterForm() {
       return
     }
 
-    // Loga automaticamente após registro
     const result = await signIn('credentials', {
-      email: data.email,
+      email: normalizedEmail,
       password: data.password,
       redirect: false,
     })
 
     if (result?.error) {
-      toast.success('Conta criada! Faça login para continuar.')
+      toast.error('Conta criada, mas o login automatico falhou por causa da autenticacao.')
       router.push('/login')
       return
     }
 
     toast.success('Conta criada com sucesso!')
-    router.push('/dashboard')
+    router.replace('/dashboard')
     router.refresh()
   }
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
-      {/* Nome */}
       <div className="space-y-1.5">
         <Label htmlFor="full_name" className="text-[var(--color-soft-white-dim)] text-sm">
           Nome completo
@@ -92,7 +92,6 @@ export function RegisterForm() {
         {errors.full_name && <p className="text-xs text-red-400">{errors.full_name.message}</p>}
       </div>
 
-      {/* E-mail */}
       <div className="space-y-1.5">
         <Label htmlFor="email" className="text-[var(--color-soft-white-dim)] text-sm">
           E-mail
@@ -108,7 +107,6 @@ export function RegisterForm() {
         {errors.email && <p className="text-xs text-red-400">{errors.email.message}</p>}
       </div>
 
-      {/* Senha */}
       <div className="space-y-1.5">
         <Label htmlFor="password" className="text-[var(--color-soft-white-dim)] text-sm">
           Senha
@@ -117,7 +115,7 @@ export function RegisterForm() {
           <Input
             id="password"
             type={showPassword ? 'text' : 'password'}
-            placeholder="••••••••"
+            placeholder="********"
             autoComplete="new-password"
             className={`${inputClass} pr-10`}
             {...register('password')}
@@ -131,18 +129,16 @@ export function RegisterForm() {
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
         </div>
-        {/* Indicador de força */}
         {password.length > 0 && (
           <div className="flex flex-wrap gap-x-4 gap-y-1 pt-1">
             <PasswordRule met={password.length >= 8} label="8+ caracteres" />
-            <PasswordRule met={/[A-Z]/.test(password)} label="Maiúscula" />
-            <PasswordRule met={/[0-9]/.test(password)} label="Número" />
+            <PasswordRule met={/[A-Z]/.test(password)} label="Maiuscula" />
+            <PasswordRule met={/[0-9]/.test(password)} label="Numero" />
           </div>
         )}
         {errors.password && <p className="text-xs text-red-400">{errors.password.message}</p>}
       </div>
 
-      {/* Confirmar senha */}
       <div className="space-y-1.5">
         <Label htmlFor="confirm_password" className="text-[var(--color-soft-white-dim)] text-sm">
           Confirmar senha
@@ -151,7 +147,7 @@ export function RegisterForm() {
           <Input
             id="confirm_password"
             type={showConfirm ? 'text' : 'password'}
-            placeholder="••••••••"
+            placeholder="********"
             autoComplete="new-password"
             className={`${inputClass} pr-10`}
             {...register('confirm_password')}
@@ -183,7 +179,7 @@ export function RegisterForm() {
       </Button>
 
       <p className="text-center text-sm text-[var(--color-soft-white-dim)]/60">
-        Já tem uma conta?{' '}
+        Ja tem uma conta?{' '}
         <Link href="/login" className="text-[var(--color-gold)] hover:text-[var(--color-gold-light)] transition-colors">
           Entrar
         </Link>

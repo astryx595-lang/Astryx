@@ -1,13 +1,19 @@
 import type { NextAuthConfig } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
-import bcrypt from 'bcryptjs'
 import { createUserRepository } from '@/lib/container'
 import { loginSchema } from '@/lib/validations/auth'
+import { supabaseAnonRequest } from '@/lib/supabase/server'
 
-// Repositório de usuários (singleton para o processo — não instancia por request aqui)
+const authSecret =
+  process.env.AUTH_SECRET ??
+  process.env.NEXTAUTH_SECRET ??
+  (process.env.NODE_ENV !== 'production' ? 'dev-only-auth-secret-change-in-production' : undefined)
+
 const userRepo = createUserRepository()
 
 export const authConfig: NextAuthConfig = {
+  secret: authSecret,
+  trustHost: true,
   providers: [
     Credentials({
       name: 'credentials',
@@ -19,17 +25,29 @@ export const authConfig: NextAuthConfig = {
         const parsed = loginSchema.safeParse(credentials)
         if (!parsed.success) return null
 
-        const user = await userRepo.findByEmailWithHash(parsed.data.email)
-        if (!user) return null
+        try {
+          const authSession = await supabaseAnonRequest('/auth/v1/token?grant_type=password', {
+            method: 'POST',
+            body: {
+              email: parsed.data.email,
+              password: parsed.data.password,
+            },
+          })
 
-        const valid = await bcrypt.compare(parsed.data.password, user.password_hash)
-        if (!valid) return null
+          const authUserId = authSession?.user?.id as string | undefined
+          if (!authUserId) return null
 
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.full_name,
-          role: user.role,
+          const profile = await userRepo.findById(authUserId)
+          if (!profile) return null
+
+          return {
+            id: profile.id,
+            email: profile.email,
+            name: profile.full_name,
+            role: profile.role,
+          }
+        } catch {
+          return null
         }
       },
     }),
@@ -44,7 +62,7 @@ export const authConfig: NextAuthConfig = {
       return token
     },
     async session({ session, token }) {
-      if (token) {
+      if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as string
       }
@@ -59,6 +77,6 @@ export const authConfig: NextAuthConfig = {
 
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60, // 30 dias
+    maxAge: 30 * 24 * 60 * 60,
   },
 }

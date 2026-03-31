@@ -9,8 +9,8 @@
  * Nenhuma página ou componente precisa mudar.
  */
 import { MockOrderRepository } from './repositories/mock/order.repository'
-import { MockUserRepository } from './repositories/mock/user.repository'
 import { NoopMailService } from './repositories/mock/mail.service'
+import { SupabaseUserRepository } from './repositories/supabase/user.repository'
 import { OrderService } from './services/order.service'
 
 export function createOrderService(): OrderService {
@@ -21,5 +21,5 @@ export function createOrderService(): OrderService {
 }
 
 export function createUserRepository() {
-  return new MockUserRepository()
+  return new SupabaseUserRepository()
 }
