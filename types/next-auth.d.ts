@@ -5,6 +5,7 @@ declare module 'next-auth' {
     user: {
       id: string
       role: string
+      avatar_url?: string
     } & DefaultSession['user']
   }
 }

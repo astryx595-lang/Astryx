@@ -1,9 +1,10 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { useSession, signOut } from 'next-auth/react'
-import { Star, LogOut } from 'lucide-react'
+import { LogOut } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
@@ -22,11 +23,15 @@ export function ClientNavbar() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="flex items-center justify-between h-14 gap-6">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 shrink-0">
-            <Star className="w-4 h-4 text-[var(--color-gold)]" fill="currentColor" />
-            <span className="text-lg font-heading font-semibold text-[var(--color-soft-white)]">
-              Astryx
-            </span>
+          <Link href="/dashboard" className="flex items-center shrink-0">
+            <Image
+              src="/images/Logo-with-write-without-background.png"
+              alt="Astryx"
+              width={130}
+              height={40}
+              className="h-9 w-auto object-contain"
+              priority
+            />
           </Link>
 
           {/* Nav */}

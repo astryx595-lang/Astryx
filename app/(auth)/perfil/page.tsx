@@ -1,9 +1,11 @@
 'use client'
 
+import { useRef, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2, User } from 'lucide-react'
+import { Loader2, User, Camera } from 'lucide-react'
+import Image from 'next/image'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,6 +17,9 @@ const inputClass =
 
 export default function PerfilPage() {
   const { data: session, update } = useSession()
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploadingAvatar, setUploadingAvatar] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
 
   const {
     register,
@@ -43,6 +48,43 @@ export default function PerfilPage() {
     toast.success('Perfil atualizado!')
   }
 
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    setPreviewUrl(URL.createObjectURL(file))
+    setUploadingAvatar(true)
+
+    try {
+      const formData = new FormData()
+      formData.append('avatar', file)
+
+      const res = await fetch(`/api/usuarios/${session?.user.id}/avatar`, {
+        method: 'POST',
+        body: formData,
+      })
+
+      const json = await res.json()
+
+      if (!res.ok) {
+        toast.error(json.error ?? 'Erro ao enviar imagem.')
+        setPreviewUrl(null)
+        return
+      }
+
+      await update({ avatar_url: json.avatar_url })
+      toast.success('Avatar atualizado!')
+    } catch {
+      toast.error('Erro ao enviar imagem.')
+      setPreviewUrl(null)
+    } finally {
+      setUploadingAvatar(false)
+      e.target.value = ''
+    }
+  }
+
+  const avatarSrc = previewUrl ?? session?.user.avatar_url ?? null
+
   return (
     <div className="space-y-8 max-w-lg">
       <div className="space-y-1">
@@ -54,14 +96,54 @@ export default function PerfilPage() {
         </h1>
       </div>
 
-      {/* Avatar placeholder */}
+      {/* Avatar */}
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 rounded-full bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.3)] flex items-center justify-center">
-          <User className="w-7 h-7 text-[var(--color-gold)]" />
+        <div className="relative group">
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingAvatar}
+            className="w-16 h-16 rounded-full overflow-hidden bg-[rgba(201,168,76,0.15)] border border-[rgba(201,168,76,0.3)] flex items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-gold)]"
+            aria-label="Alterar avatar"
+          >
+            {avatarSrc ? (
+              <Image
+                src={avatarSrc}
+                alt="Avatar"
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+                unoptimized
+              />
+            ) : (
+              <User className="w-7 h-7 text-[var(--color-gold)]" />
+            )}
+
+            {/* Overlay */}
+            <span className="absolute inset-0 rounded-full bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+              {uploadingAvatar ? (
+                <Loader2 className="w-4 h-4 text-white animate-spin" />
+              ) : (
+                <Camera className="w-4 h-4 text-white" />
+              )}
+            </span>
+          </button>
+
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="hidden"
+            onChange={handleAvatarChange}
+          />
         </div>
+
         <div>
           <p className="font-medium text-[var(--color-soft-white)]">{session?.user.name}</p>
           <p className="text-sm text-[var(--color-soft-white-dim)]/60">{session?.user.email}</p>
+          <p className="text-xs text-[var(--color-soft-white-dim)]/40 mt-0.5">
+            Clique na foto para alterar
+          </p>
         </div>
       </div>
 

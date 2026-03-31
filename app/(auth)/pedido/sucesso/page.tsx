@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { Star, CheckCircle } from 'lucide-react'
 import { Suspense } from 'react'
-import { StarfieldCanvas } from '@/components/StarfieldCanvas'
 import { Button } from '@/components/ui/button'
 
 export const metadata: Metadata = { title: 'Pedido Confirmado' }
@@ -10,13 +9,11 @@ export const metadata: Metadata = { title: 'Pedido Confirmado' }
 function SuccessContent() {
   return (
     <div className="text-center space-y-8 max-w-md mx-auto">
-      {/* Ícone animado */}
       <div className="flex items-center justify-center">
         <div className="relative">
           <div className="w-24 h-24 rounded-full bg-[rgba(201,168,76,0.1)] border border-[rgba(201,168,76,0.3)] flex items-center justify-center">
             <CheckCircle className="w-12 h-12 text-[var(--color-gold)]" />
           </div>
-          {/* Brilhos decorativos */}
           {[...Array(6)].map((_, i) => (
             <Star
               key={i}
@@ -57,7 +54,7 @@ function SuccessContent() {
             Acompanhar pedido
           </Button>
         </Link>
-        <Link href="/">
+        <Link href="/dashboard">
           <Button variant="ghost" className="text-[var(--color-soft-white-dim)] hover:text-[var(--color-soft-white)] border border-[rgba(201,168,76,0.15)] hover:border-[rgba(201,168,76,0.3)]">
             Voltar ao início
           </Button>
@@ -69,23 +66,10 @@ function SuccessContent() {
 
 export default function SucessoPage() {
   return (
-    <>
-      <StarfieldCanvas />
-      <div className="relative min-h-screen flex items-center justify-center px-4 py-16">
-        <div
-          className="absolute inset-0 pointer-events-none"
-          aria-hidden="true"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%)',
-          }}
-        />
-        <div className="relative z-10 w-full">
-          <Suspense>
-            <SuccessContent />
-          </Suspense>
-        </div>
-      </div>
-    </>
+    <div className="flex items-center justify-center py-10">
+      <Suspense>
+        <SuccessContent />
+      </Suspense>
+    </div>
   )
 }

@@ -17,7 +17,8 @@
       "Bash(cp middleware.ts proxy.ts)",
       "Bash(rm middleware.ts)",
       "Bash(npx shadcn@latest add accordion --yes)",
-      "Bash(npx shadcn@latest add input label badge --yes)"
+      "Bash(npx shadcn@latest add input label badge --yes)",
+      "Bash(node -e \"require\\(''@tailwindcss/oxide''\\)\")"
     ]
   }
 }

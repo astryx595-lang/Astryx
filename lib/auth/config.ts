@@ -45,6 +45,7 @@ export const authConfig: NextAuthConfig = {
             email: profile.email,
             name: profile.full_name,
             role: profile.role,
+            avatar_url: profile.avatar_url ?? null,
           }
         } catch {
           return null
@@ -54,10 +55,14 @@ export const authConfig: NextAuthConfig = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session: updateSession }) {
       if (user) {
         token.id = user.id
         token.role = (user as { role?: string }).role
+        token.avatar_url = (user as { avatar_url?: string | null }).avatar_url ?? undefined
+      }
+      if (trigger === 'update' && updateSession?.avatar_url !== undefined) {
+        token.avatar_url = updateSession.avatar_url
       }
       return token
     },
@@ -65,6 +70,7 @@ export const authConfig: NextAuthConfig = {
       if (session.user) {
         session.user.id = token.id as string
         session.user.role = token.role as string
+        session.user.avatar_url = token.avatar_url as string | undefined
       }
       return session
     },
