@@ -29,6 +29,10 @@ export const metadata: Metadata = {
     'Descubra sua essência através de um mapa astral elaborado com profundidade, cuidado e precisão. Astrologia de alta qualidade para seu autoconhecimento.',
   keywords: ['mapa astral', 'astrologia', 'autoconhecimento', 'signos', 'horóscopo'],
   authors: [{ name: 'Astryx' }],
+  icons: {
+    icon: '/images/Just-logo.png',
+    apple: '/images/Just-logo.png',
+  },
   openGraph: {
     type: 'website',
     locale: 'pt_BR',

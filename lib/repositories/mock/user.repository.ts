@@ -1,29 +1,27 @@
 import type { IUserRepository } from '../interfaces'
 import type { User, CreateUserDTO, UpdateUserDTO } from '@/types/database'
 
-const MOCK_USERS: (User & { password_hash: string })[] = [
-  {
-    id: 'user-1',
-    email: 'cliente@exemplo.com',
-    full_name: 'Maria Silva',
-    role: 'client',
-    password_hash: '$2b$12$placeholder',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: 'admin-1',
-    email: 'admin@astryx.com.br',
-    full_name: 'Admin Astryx',
-    role: 'admin',
-    password_hash: '$2b$12$placeholder',
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-]
+// Persiste no globalThis para sobreviver ao isolamento de módulos do Next.js
+const g = globalThis as typeof globalThis & {
+  __astryx_users__?: (User & { password_hash: string })[]
+}
+if (!g.__astryx_users__) {
+  g.__astryx_users__ = [
+    {
+      id: 'admin-1',
+      email: 'admin@astryx.com.br',
+      full_name: 'Admin Astryx',
+      role: 'admin',
+      password_hash: '$2b$12$SmGNq5hbJoYQ3XxCs1QYHe1xfDc.80Vzx78pOezeTY2KobypJ/4Cy', // admin123
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    },
+  ]
+}
+const USERS_STORE = g.__astryx_users__!
 
 export class MockUserRepository implements IUserRepository {
-  private users = [...MOCK_USERS]
+  private users = USERS_STORE
 
   async findById(id: string): Promise<User | null> {
     const u = this.users.find((u) => u.id === id)
@@ -37,6 +35,10 @@ export class MockUserRepository implements IUserRepository {
     if (!u) return null
     const { password_hash: _, ...user } = u
     return user
+  }
+
+  async findByEmailWithHash(email: string): Promise<(User & { password_hash: string }) | null> {
+    return this.users.find((u) => u.email === email) ?? null
   }
 
   async create(data: CreateUserDTO): Promise<User> {

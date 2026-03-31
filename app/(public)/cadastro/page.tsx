@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { Star } from 'lucide-react'
+import Image from 'next/image'
 import { StarfieldCanvas } from '@/components/StarfieldCanvas'
 import { RegisterForm } from '@/components/organisms/auth/RegisterForm'
 
@@ -24,15 +24,14 @@ export default function CadastroPage() {
         <div className="relative z-10 w-full max-w-md space-y-8">
           {/* Logo */}
           <div className="text-center space-y-2">
-            <Link href="/" className="inline-flex items-center gap-2 group">
-              <Star
-                className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300"
-                style={{ color: 'var(--color-gold)' }}
-                fill="currentColor"
+            <Link href="/" className="inline-flex items-center group">
+              <Image
+                src="/images/Logo-with-write-without-background.png"
+                alt="Astryx"
+                width={130}
+                height={40}
+                className="h-10 w-auto object-contain transition-opacity duration-200 group-hover:opacity-80"
               />
-              <span className="text-2xl font-heading font-semibold text-[var(--color-soft-white)]">
-                Astryx
-              </span>
             </Link>
             <h1 className="font-heading text-3xl font-semibold text-[var(--color-soft-white)]">
               Crie sua conta

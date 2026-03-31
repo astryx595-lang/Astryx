@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Star } from 'lucide-react'
+import Image from 'next/image'
 
 export function Footer() {
   return (
@@ -8,9 +8,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Marca */}
           <div>
-            <div className="flex items-center gap-2 mb-3">
-              <Star className="w-4 h-4" style={{ color: 'var(--color-gold)' }} fill="currentColor" />
-              <span className="text-xl font-heading font-semibold text-[var(--color-soft-white)]">Astryx</span>
+            <div className="mb-3">
+              <Image
+                src="/images/Logo-with-write-without-background.png"
+                alt="Astryx"
+                width={120}
+                height={36}
+                className="h-8 w-auto object-contain"
+              />
             </div>
             <p className="text-sm text-[var(--color-soft-white-dim)] leading-relaxed">
               Mapas astrais elaborados com profundidade, cuidado e precisão astrológica.

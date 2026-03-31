@@ -19,13 +19,11 @@ export const authConfig: NextAuthConfig = {
         const parsed = loginSchema.safeParse(credentials)
         if (!parsed.success) return null
 
-        // TODO: quando migrar ao Supabase, buscar com password_hash incluso
-        const user = await userRepo.findByEmail(parsed.data.email)
+        const user = await userRepo.findByEmailWithHash(parsed.data.email)
         if (!user) return null
 
-        // Nota: no mock o hash é placeholder — em produção verificar com bcrypt
-        // const valid = await bcrypt.compare(parsed.data.password, user.password_hash)
-        // if (!valid) return null
+        const valid = await bcrypt.compare(parsed.data.password, user.password_hash)
+        if (!valid) return null
 
         return {
           id: user.id,

@@ -1,4 +1,8 @@
+'use client'
+
 import { Star } from 'lucide-react'
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
 
 const TESTIMONIALS = [
   {
@@ -60,11 +64,20 @@ function Stars() {
 }
 
 export function TestimonialsSection() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
     <section className="relative z-10 py-24 px-4">
-      {/* Separador decorativo */}
       <div className="container mx-auto max-w-6xl">
-        <div className="flex items-center gap-4 mb-16">
+        {/* Separador decorativo */}
+        <motion.div
+          className="flex items-center gap-4 mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
           <div className="flex-1 h-px bg-gradient-to-r from-transparent to-[rgba(201,168,76,0.3)]" />
           <div className="text-center space-y-2">
             <p className="text-xs font-medium tracking-widest uppercase text-[var(--color-gold)]">
@@ -75,14 +88,18 @@ export function TestimonialsSection() {
             </h2>
           </div>
           <div className="flex-1 h-px bg-gradient-to-l from-transparent to-[rgba(201,168,76,0.3)]" />
-        </div>
+        </motion.div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div ref={ref} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {TESTIMONIALS.map((t, i) => (
-            <div
+            <motion.div
               key={i}
-              className="rounded-2xl p-6 flex flex-col gap-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(201,168,76,0.1)] hover:border-[rgba(201,168,76,0.25)] transition-colors duration-300"
+              initial={{ opacity: 0, y: 32 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.55, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
+              className="rounded-2xl p-6 flex flex-col gap-4 bg-[rgba(255,255,255,0.02)] border border-[rgba(201,168,76,0.1)] hover:border-[rgba(201,168,76,0.25)] transition-colors duration-300 cursor-default"
             >
               <Stars />
 
@@ -91,7 +108,6 @@ export function TestimonialsSection() {
               </blockquote>
 
               <div className="flex items-center gap-3 pt-2 border-t border-[rgba(201,168,76,0.08)]">
-                {/* Avatar */}
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-semibold bg-[rgba(201,168,76,0.15)] text-[var(--color-gold)] shrink-0">
                   {t.avatar}
                 </div>
@@ -102,7 +118,7 @@ export function TestimonialsSection() {
                   </p>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

@@ -12,6 +12,7 @@ import type {
 export interface IUserRepository {
   findById(id: string): Promise<User | null>
   findByEmail(email: string): Promise<User | null>
+  findByEmailWithHash(email: string): Promise<(User & { password_hash: string }) | null>
   create(data: CreateUserDTO): Promise<User>
   update(id: string, data: UpdateUserDTO): Promise<User>
 }

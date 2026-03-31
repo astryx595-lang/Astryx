@@ -152,7 +152,7 @@ export default function ServicosPage() {
               </ul>
 
               {/* CTA */}
-              <Link href={`/pedido?service=${type}`}>
+              <Link href="/login">
                 <Button
                   className={`w-full font-semibold ${
                     highlight
@@ -160,7 +160,7 @@ export default function ServicosPage() {
                       : 'border border-[rgba(201,168,76,0.3)] text-[var(--color-soft-white-dim)] hover:border-[rgba(201,168,76,0.6)] hover:text-[var(--color-soft-white)] bg-transparent hover:bg-[rgba(201,168,76,0.05)]'
                   }`}
                 >
-                  Solicitar {SERVICE_LABELS[type]}
+                  Entrar para solicitar
                 </Button>
               </Link>
             </div>
@@ -196,9 +196,9 @@ export default function ServicosPage() {
           <h2 className="font-heading text-3xl font-semibold text-[var(--color-soft-white)]">
             Pronta para começar?
           </h2>
-          <Link href="/pedido">
+          <Link href="/cadastro">
             <Button className="px-10 py-5 bg-[var(--color-gold)] text-[#0e0120] hover:bg-[var(--color-gold-light)] font-semibold shadow-lg shadow-[rgba(201,168,76,0.25)]">
-              Solicitar Meu Mapa Astral
+              Criar Minha Conta
             </Button>
           </Link>
         </div>

@@ -77,8 +77,9 @@ export default async function AdminDashboardPage() {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-xl font-semibold text-[var(--color-soft-white)]">Pedidos recentes</h2>
-          <Link href="/admin/pedidos" className="text-sm text-[var(--color-gold)] hover:text-[var(--color-gold-light)] transition-colors">
-            Ver todos →
+          <Link href="/admin/pedidos" className="flex items-center gap-1 text-sm text-[var(--color-gold)] hover:text-[var(--color-gold-light)] transition-colors group">
+            Ver todos
+            <ChevronRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5" />
           </Link>
         </div>
 

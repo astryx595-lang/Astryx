@@ -1,8 +1,12 @@
+'use client'
+
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { ArrowRight, Sparkles, Star, Moon, Sun } from 'lucide-react'
 import { SERVICE_LABELS, SERVICE_DESCRIPTIONS, PRICE_TABLE } from '@/constants/services'
 import type { ServiceType } from '@/types/database'
+import { motion, useInView } from 'framer-motion'
+import { useRef } from 'react'
 
 const FEATURED_SERVICES: { type: ServiceType; icon: React.ReactNode; highlight?: boolean }[] = [
   {
@@ -29,11 +33,20 @@ function formatPrice(cents: number) {
 }
 
 export function ServicesPreview() {
+  const ref = useRef(null)
+  const inView = useInView(ref, { once: true, margin: '-80px' })
+
   return (
     <section className="relative z-10 py-24 px-4">
       <div className="container mx-auto max-w-6xl">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
+        <motion.div
+          className="text-center mb-16 space-y-4"
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
           <p className="text-xs font-medium tracking-widest uppercase text-[var(--color-gold)]">
             Nossos Serviços
           </p>
@@ -43,14 +56,18 @@ export function ServicesPreview() {
           <p className="text-[var(--color-soft-white-dim)] max-w-lg mx-auto">
             Cada mapa é elaborado individualmente, com interpretação aprofundada e linguagem acessível.
           </p>
-        </div>
+        </motion.div>
 
         {/* Grid de cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {FEATURED_SERVICES.map(({ type, icon, highlight }) => (
-            <div
+        <div ref={ref} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {FEATURED_SERVICES.map(({ type, icon, highlight }, i) => (
+            <motion.div
               key={type}
-              className={`relative rounded-2xl p-6 flex flex-col gap-5 border transition-all duration-300 group hover:-translate-y-1 ${
+              initial={{ opacity: 0, y: 36 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -6, transition: { duration: 0.25 } }}
+              className={`relative rounded-2xl p-6 flex flex-col gap-5 border transition-colors duration-300 group cursor-default ${
                 highlight
                   ? 'bg-[rgba(201,168,76,0.07)] border-[rgba(201,168,76,0.4)] gold-glow'
                   : 'bg-[rgba(255,255,255,0.03)] border-[rgba(201,168,76,0.12)] hover:border-[rgba(201,168,76,0.3)]'
@@ -65,11 +82,11 @@ export function ServicesPreview() {
 
               {/* Ícone */}
               <div
-                className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                className={`w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-300 ${
                   highlight
                     ? 'bg-[rgba(201,168,76,0.2)] text-[var(--color-gold)]'
                     : 'bg-[rgba(255,255,255,0.05)] text-[var(--color-soft-white-dim)] group-hover:bg-[rgba(201,168,76,0.1)] group-hover:text-[var(--color-gold)]'
-                } transition-colors duration-300`}
+                }`}
               >
                 {icon}
               </div>
@@ -91,22 +108,28 @@ export function ServicesPreview() {
                 </p>
                 <p className="text-xs text-[var(--color-soft-white-dim)]/60 mt-0.5">pagamento único</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-12">
+        <motion.div
+          className="text-center mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: '-40px' }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
           <Link href="/servicos">
             <Button
               variant="ghost"
-              className="text-[var(--color-gold)] hover:text-[var(--color-gold-light)] hover:bg-[rgba(201,168,76,0.05)] gap-2"
+              className="text-[var(--color-gold)] hover:text-[var(--color-gold-light)] hover:bg-[rgba(201,168,76,0.05)] gap-2 group"
             >
               Ver todos os detalhes
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
             </Button>
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   )
